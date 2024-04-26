@@ -1,19 +1,33 @@
+/** gamestate.c                                                               *
+ *  -----------                                                               *
+ *                                                                            *
+ *  - This file implements functions for managing the game state in           *
+ *    a Blackjack game.                                                       *
+ *                                                                            *
+ *  - It includes functions to initialize, reset, deal initial cards,         *
+ *    update scores, determine winners, and clean up the game state.          *
+ *                                                                            *
+ * -------------------------------------------------------------------------- */
 #include <stdio.h>
 #include <string.h>
 #include "gamestate.h"
 #include "card.h"
 
-
+/* Sets the cash amount in the game state */
 void set_cash(struct GameState *state, int cash)
 {
-	state->cash.set_cash(&state->cash, cash);
+	/* state->cash.set_cash(&state->cash, cash); */
+	state->cash.cash = cash;
 }
 
+/* Sets the pot amount in the game state */
 void set_pot(struct GameState *state, int pot)
 {
-	state->pot.set_pot(&state->pot, pot);
+	/* state->pot.set_pot(&state->pot, pot); */
+	state->pot.pot = pot;
 }
 
+/* Prints the current game state */
 void print_game_state(struct GameState *state )
 {
 	printf("Dealer's hand:\n");
@@ -24,17 +38,37 @@ void print_game_state(struct GameState *state )
 	printf("Pot: %d\n", state->pot.pot);
 }
 
+/* Executes the betting phase */
 void betting_phase(struct GameState *state )
 {
+	int bet;
 	printf("Current cash: %d\n", state->cash.cash);
 	printf("Current pot: %d\n", state->pot.pot);
-	int bet;
+	if (state->pot.pot == 0 && state->cash.cash < 10)
+	{
+		printf("You are out of cash! Game Over.\n");
+		exit(EXIT_SUCCESS);
+	}
 	printf("Enter your bet (must be multiples of 10): ");
 	scanf("%d", &bet);
-	set_pot(state, state->pot.pot + bet);
-	set_cash(state, state->cash.cash - bet);
+	if (bet < 0 || bet % 10 != 0 || (bet == 0 && state->pot.pot == 0))
+	{
+		puts("Invalid bet! Please enter a valid bet.");
+		betting_phase(state);
+	}
+	else if (bet > state->cash.cash)
+	{
+		puts("You don't have enough cash for this bet!");
+		betting_phase(state);
+	}
+	else
+	{
+		set_pot(state, state->pot.pot + bet);
+		set_cash(state, state->cash.cash - bet);
+	}
 }
 
+/* Executes the initial deal phase */
 void initial_deal_phase(struct GameState *state )
 {
 	card_push(&state->player_hand, card_draw(&state->deck));
@@ -43,6 +77,7 @@ void initial_deal_phase(struct GameState *state )
 	card_push(&state->dealer_hand, card_draw(&state->deck));
 }
 
+/* Checks for a blackjack */
 void blackjack_check_phase(struct GameState *state )
 {
 	int player_value = calculate_hand_value(&state->player_hand);
@@ -55,6 +90,7 @@ void blackjack_check_phase(struct GameState *state )
 	}
 }
 
+/* Executes the hit or stand phase */
 void hit_or_stand_phase(struct GameState *state )
 {
 	char choice[10];
@@ -64,8 +100,10 @@ void hit_or_stand_phase(struct GameState *state )
 		scanf("%s", choice);
 		if (strcmp(choice, "hit") == 0)
 		{
+			int player_value;
 			card_push(&state->player_hand, card_draw(&state->deck));
-			int player_value = calculate_hand_value(&state->player_hand);
+			player_value = calculate_hand_value(&state->player_hand);
+			printf("Player's hand value: %d\n", player_value);
 			if (player_value > 21)
 			{
 				printf("Bust! You lose!\n");
@@ -86,6 +124,7 @@ void hit_or_stand_phase(struct GameState *state )
 	}
 }
 
+/* Executes the dealer draw phase */
 void dealer_draw_phase(struct GameState *state )
 {
 	int dealer_value = calculate_hand_value(&state->dealer_hand);
@@ -96,10 +135,11 @@ void dealer_draw_phase(struct GameState *state )
 	}
 }
 
+/* Resets the cards for a new round */
 void reset_cards_phase(struct GameState *state )
 {
 	init_cardlist(&state->deck);
 	clear_cardlist(&state->player_hand);
 	clear_cardlist(&state->dealer_hand);
+	fill_deck(&state->deck);
 }
-
