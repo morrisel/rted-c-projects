@@ -35,7 +35,7 @@ To compile the program, you can use the following commands:
 gcc -std=c89 -pedantic -Wall -Wextra -Wconversion -Wno-main *.c -o out_black-jack 
 ```
 
-#### Compilation and linking with the extra flags additional features:
+#### Compilation and linking with the extra flags:
 
 ##### compilation:
 ```bash
