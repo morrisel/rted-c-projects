@@ -1,4 +1,4 @@
-# Black-Jack Game
+## Black-Jack Game
 
 
 ### Description:
@@ -35,7 +35,7 @@ To compile the program, you can use the following commands:
 gcc -std=c89 -pedantic -Wall -Wextra -Wconversion -Wno-main *.c -o out_black-jack 
 ```
 
-#### Compilation with the extra flags and additional features:
+#### Compilation and linking with the extra flags additional features:
 
 ##### compilation:
 ```bash
@@ -43,10 +43,10 @@ gcc -std=c89 -c -g -O0 -pedantic -Wall -Wextra -Wconversion -Wno-main -Wshadow *
 ```
 ##### linking:
 ```bash
-gcc *.o -o out_black-jack -lm
+gcc *.o -o out_black-jack
 ```
 
-#### Functionality:
+### Functionality:
 	The program allows the player to interact with the blackjack game, including the following actions:
 	- Placing a bet.
 	- Dealing initial cards.
@@ -55,15 +55,14 @@ gcc *.o -o out_black-jack -lm
 	- Determining win or loss.
 
 
-#### Code Style:
+### Code Style:
 	- Allman Style indentation.
 	- Google Style for comments.
 
-#### References:
+---
+### References:
 - Google Style: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
 - Indentation Style: &nbsp;[Indentation Style](https://en.wikipedia.org/wiki/Indentation_style)
-
-
 
 ---
 #### Additional Information
